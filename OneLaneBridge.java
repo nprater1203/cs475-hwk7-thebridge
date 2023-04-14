@@ -8,29 +8,28 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-/**
- * Runs all threads
- */
-
-
 public class OneLaneBridge extends Bridge{
 
     private int bridgeLimit;
     private Object cv;
-    //private int  = 0;
 
+    // Constructor
     public OneLaneBridge(int bL)
     {
         bridgeLimit = bL;
         cv = new Object();
     }
 
+
+    /*
+     * Method to see if the car can cross the bridge
+     * @param -- the car object
+     */
     public void arrive(Car car) throws InterruptedException
     {
         synchronized(cv)
         {
-
-            //System.out.println("Bridge limit = " + bridgeLimit);
+            // Checks to see if the car can get on the bridge
             while(bridge.size() >= bridgeLimit || car.getDirection() != direction)
             {
                 try
@@ -49,21 +48,20 @@ public class OneLaneBridge extends Bridge{
             car.setEntryTime(currentTime);
             bridge.add(car);
             System.out.println("Bridge (dir="+ car.getDirection() + "): " + bridge.toString());
-            
-            // for (Car cars : bridge) 
-            // {
-            //     System.out.print(cars.toString() + ", ");
-            // }
-            //System.out.println("]");
             currentTime++;
         }
 
     }
 
+    /*
+     * Method to see if the car exit cross the bridge
+     * @param -- the car object
+     */
     public void exit(Car car) throws InterruptedException
     {
         synchronized(cv)
         {
+            // Check to see if the car is at the from of the list
             while(bridge.get(0) != car)
             {
                 try
@@ -75,18 +73,9 @@ public class OneLaneBridge extends Bridge{
                     e.printStackTrace();
                 }
             }
-                bridge.remove(car);
-                System.out.println("Bridge (dir="+ car.getDirection() + "): " + bridge.toString());
-                // for (Car cars : bridge) 
-                // {
-                //     System.out.print(cars.toString() + ", ");
-                // }
-                // System.out.println("]");
- 
-                cv.notifyAll();
-            
+            bridge.remove(car);
+            System.out.println("Bridge (dir="+ car.getDirection() + "): " + bridge.toString());
+            cv.notifyAll();
         }
-
     }
-
 }
