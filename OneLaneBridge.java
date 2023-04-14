@@ -15,7 +15,12 @@ public class OneLaneBridge extends Bridge{
     {
         synchronized(cv)
         {
-            while(bridge.size() >= 3 && car.getDirection() != direction)
+            if(bridge.size() == 0)
+            {
+                direction = car.getDirection();
+            }
+            //System.out.println("Bridge limit = " + bridgeLimit);
+            while(bridge.size() >= 3 || car.getDirection() != direction)
             {
                 try
                 {
@@ -28,11 +33,12 @@ public class OneLaneBridge extends Bridge{
             }
             car.setEntryTime(currentTime);
             bridge.add(car);
+            System.out.print("Bridge (dir="+ car.getDirection() + "): [");
             for (Car cars : bridge) 
             {
                 System.out.print(cars.toString() + ", ");
             }
-            System.out.println("\n");
+            System.out.println("]");
             currentTime++;
         }
 
@@ -45,11 +51,30 @@ public class OneLaneBridge extends Bridge{
             if(bridge.get(0) == car)
             {
                 bridge.remove(car);
+                System.out.print("Bridge (dir="+ car.getDirection() + "): [");
                 for (Car cars : bridge) 
                 {
                     System.out.print(cars.toString() + ", ");
                 }
-                System.out.println("\n");
+                System.out.println("]");
+                if(bridge.size() == 0)
+                {
+                    if(direction == car.getDirection())
+                    {
+                        if(car.getDirection() == false)
+                        {
+                            direction = true;
+                        }
+                        else
+                        {
+                            direction = false;
+                        }
+                    }
+                    else
+                    {
+                        direction = car.getDirection();
+                    }
+                }
                 cv.notifyAll();
             }
         }

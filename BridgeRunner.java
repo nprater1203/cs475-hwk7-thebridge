@@ -9,6 +9,7 @@ import java.util.List;
 
 public class BridgeRunner {
 	//private static final String[] test = {"Hi","I","am","testing"};
+	public static int bridgeLimit;
 
 	public static void main(String[] args) {
 
@@ -20,7 +21,7 @@ public class BridgeRunner {
 		else
 			{
 			int numOfThreads = Integer.parseInt(args[1]);
-			int bridgeLimit = Integer.parseInt(args[0]);
+			bridgeLimit = Integer.parseInt(args[0]);
 			if(numOfThreads < 0 || bridgeLimit <= 0)
 			{
 				System.out.println("Error: bridge limit and/or num cars must be positive.");
@@ -34,7 +35,7 @@ public class BridgeRunner {
 			// 	System.out.println(args[i] + "\n");
 			// }
 			// TODO - instantiate the bridge
-				System.out.println("Instansiating Bridge");
+				//System.out.println("Instansiating Bridge");
 				Bridge b = new OneLaneBridge();
 
 
@@ -42,33 +43,32 @@ public class BridgeRunner {
 				// TODO - allocate space for threads
 				//Thread[] arrayThreads = new Thread[numOfThreads];
 				//List<Thread> arrayThreads = new ArrayList<>();
-				ArrayList<Thread> arrayThreads = new ArrayList<Thread>(numOfThreads);
-
-				// TODO - start then join the threads
-
-				// for(int i = 0; i < numOfThreads; i++)
+				//ArrayList<Thread> arrayThreads = new ArrayList<Thread>(numOfThreads);
+					// TODO - start then join the threads
+				Thread[] arrayThreads = new Thread[numOfThreads];
+				for(int i = 0; i < numOfThreads; i++)
+				{
+					//System.out.println("Trying to get thread " + (i+1));
+					//arrayThreads[i]
+				    arrayThreads[i] = new Thread(new Car(i, b));
+					arrayThreads[i].start();
+				}
+				// int i = 0;
+				// for (Thread thread : arrayThreads)
 				// {
 				// 	System.out.println("Trying to get thread " + (i+1));
-				// 	//arrayThreads[i]
-				//     arrayThreads[i] = new Thread(new Car(i, b));
-				// 	arrayThreads[i].start();
+				// 	thread = new Thread(new Car(i, b));
+				// 	thread.start();
+				// 	i++;
 				// }
-				int i = 0;
-				for (Thread thread : arrayThreads)
-				{
-					System.out.println("Trying to get thread " + (i+1));
-					thread = new Thread(new Car(i, b));
-					thread.start();
-					i++;
-				}
 				
 
 
-				for (Thread thread : arrayThreads)
+				for(int i = 0; i < numOfThreads; i++)
 				{
 					try 
 					{
-						thread.join();
+						arrayThreads[i].join();
 					} 
 					catch (InterruptedException e) 
 					{
