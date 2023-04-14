@@ -9,13 +9,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Runs all threads
- */
-
-
 public class BridgeRunner {
-	;
 
 	public static void main(String[] args) {
 
@@ -25,17 +19,17 @@ public class BridgeRunner {
 			System.out.println("Usage: javac BridgeRunner <bridge limit> <num cars>");
 		}
 		else
-			{
+		{
+			// Assumes that the two inputs are ints
 			int numOfThreads = Integer.parseInt(args[1]);
 			int bridgeLimit = Integer.parseInt(args[0]);
-			if(numOfThreads < 0 || bridgeLimit <= 0)
+			if(numOfThreads <= 0 || bridgeLimit <= 0)
 			{
 				System.out.println("Error: bridge limit and/or num cars must be positive.");
 				
 			}
 			else
 			{
-				System.out.println("Num of threads = " + numOfThreads);
 				// TODO - instantiate the bridge
 				Bridge b = new OneLaneBridge(bridgeLimit);
 
@@ -65,5 +59,4 @@ public class BridgeRunner {
 			}
 		}
 	}
-
 }
