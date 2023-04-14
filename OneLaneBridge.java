@@ -1,3 +1,10 @@
+/*
+	Name: Nicholas Prater
+	Course: CS 481 OS
+	Professor: Dr. Chiu
+	Date: 4/14/23
+*/
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -8,19 +15,56 @@ import java.util.ArrayList;
 
 public class OneLaneBridge extends Bridge{
 
-    private Object cv = new Object();
+    private int bridgeLimit;
+    private Object cv;
     //private int  = 0;
+
+    public OneLaneBridge(int bL)
+    {
+        bridgeLimit = bL;
+        cv = new Object();
+    }
 
     public void arrive(Car car) throws InterruptedException
     {
         synchronized(cv)
         {
-            if(bridge.size() == 0)
-            {
-                direction = car.getDirection();
-            }
+
             //System.out.println("Bridge limit = " + bridgeLimit);
-            while(bridge.size() >= 3 || car.getDirection() != direction)
+            while(bridge.size() >= bridgeLimit || car.getDirection() != direction)
+            {
+                try
+                {
+                    cv.wait();
+                }
+                catch(InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                if(bridge.size() == 0)
+                {
+                    direction = car.getDirection();
+                }
+            }
+            car.setEntryTime(currentTime);
+            bridge.add(car);
+            System.out.println("Bridge (dir="+ car.getDirection() + "): " + bridge.toString());
+            
+            // for (Car cars : bridge) 
+            // {
+            //     System.out.print(cars.toString() + ", ");
+            // }
+            //System.out.println("]");
+            currentTime++;
+        }
+
+    }
+
+    public void exit(Car car) throws InterruptedException
+    {
+        synchronized(cv)
+        {
+            while(bridge.get(0) != car)
             {
                 try
                 {
@@ -31,52 +75,16 @@ public class OneLaneBridge extends Bridge{
                     e.printStackTrace();
                 }
             }
-            car.setEntryTime(currentTime);
-            bridge.add(car);
-            System.out.print("Bridge (dir="+ car.getDirection() + "): [");
-            for (Car cars : bridge) 
-            {
-                System.out.print(cars.toString() + ", ");
-            }
-            System.out.println("]");
-            currentTime++;
-        }
-
-    }
-
-    public void exit(Car car) throws InterruptedException
-    {
-        synchronized(cv)
-        {
-            if(bridge.get(0) == car)
-            {
                 bridge.remove(car);
-                System.out.print("Bridge (dir="+ car.getDirection() + "): [");
-                for (Car cars : bridge) 
-                {
-                    System.out.print(cars.toString() + ", ");
-                }
-                System.out.println("]");
-                if(bridge.size() == 0)
-                {
-                    if(direction == car.getDirection())
-                    {
-                        if(car.getDirection() == false)
-                        {
-                            direction = true;
-                        }
-                        else
-                        {
-                            direction = false;
-                        }
-                    }
-                    else
-                    {
-                        direction = car.getDirection();
-                    }
-                }
+                System.out.println("Bridge (dir="+ car.getDirection() + "): " + bridge.toString());
+                // for (Car cars : bridge) 
+                // {
+                //     System.out.print(cars.toString() + ", ");
+                // }
+                // System.out.println("]");
+ 
                 cv.notifyAll();
-            }
+            
         }
 
     }
